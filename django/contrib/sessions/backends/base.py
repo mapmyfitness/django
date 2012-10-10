@@ -11,13 +11,9 @@ except ImportError:
 
 from django.conf import settings
 from django.core.exceptions import SuspiciousOperation
-from django.utils.hashcompat import md5_constructor
+from django.utils.hashcompat import md5_constructor, sha_constructor
 
-# Use the system (hardware-based) random number generator if it exists.
-if hasattr(random, 'SystemRandom'):
-    randrange = random.SystemRandom().randrange
-else:
-    randrange = random.randrange
+randrange = random.randrange
 MAX_SESSION_KEY = 18446744073709551616L     # 2 << 63
 
 class CreateError(Exception):
@@ -138,7 +134,7 @@ class SessionBase(object):
             # No getpid() in Jython, for example
             pid = 1
         while 1:
-            session_key = md5_constructor("%s%s%s%s"
+            session_key = sha_constructor("%s%s%s%s"
                     % (randrange(0, MAX_SESSION_KEY), pid, time.time(),
                        settings.SECRET_KEY)).hexdigest()
             if not self.exists(session_key):
