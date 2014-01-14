@@ -241,8 +241,10 @@ class BaseDatabaseWrapper(local):
 
     def close(self):
         if self.connection is not None:
-            self.connection.close()
-            self.connection = None
+            try:
+                self.connection.close()
+            finally:
+                self.connection = None
 
     def cursor(self):
         if (self.use_debug_cursor or
