@@ -71,7 +71,7 @@ if u'SVN' in version:
     version = ' '.join(version.split(' ')[:-1])
 
 setup(
-    name = "mmf-Django",
+    name = "Django",
     version = version.replace(' ', '-'),
     url = 'http://www.djangoproject.com/',
     author = 'Django Software Foundation',
@@ -79,6 +79,7 @@ setup(
     description = 'A high-level Python Web framework that encourages rapid development and clean, pragmatic design.',
     download_url = 'https://www.djangoproject.com/m/releases/1.3/Django-1.3.4.tar.gz',
     packages = packages,
+    package_data = {'django': ['bin/django_bash_completion']},
     cmdclass = cmdclasses,
     data_files = data_files,
     scripts = ['django/bin/django-admin.py'],
