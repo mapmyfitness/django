@@ -59,8 +59,6 @@ for dirpath, dirnames, filenames in os.walk(django_dir):
     elif filenames:
         data_files.append([dirpath, [os.path.join(dirpath, f) for f in filenames]])
 
-packages.append('extras')
-
 # Small hack for working with bdist_wininst.
 # See http://mail.python.org/pipermail/distutils-sig/2004-August/004134.html
 if len(sys.argv) > 1 and sys.argv[1] == 'bdist_wininst':
