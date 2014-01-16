@@ -17,10 +17,10 @@ class osx_install_data(install_data):
         self.set_undefined_options('install', ('install_lib', 'install_dir'))
         install_data.finalize_options(self)
 
-if sys.platform == "darwin": 
-    cmdclasses = {'install_data': osx_install_data} 
-else: 
-    cmdclasses = {'install_data': install_data} 
+if sys.platform == "darwin":
+    cmdclasses = {'install_data': osx_install_data}
+else:
+    cmdclasses = {'install_data': install_data}
 
 def fullsplit(path, result=None):
     """
@@ -72,7 +72,7 @@ if u'SVN' in version:
 
 setup(
     name = "Django",
-    version = "1.3.4.mmf.1",
+    version = version.replace(' ', '-'),
     url = 'http://www.djangoproject.com/',
     author = 'Django Software Foundation',
     author_email = 'foundation@djangoproject.com',

@@ -1,4 +1,7 @@
-VERSION = (1, 3, 4, 'final', 0)
+VERSION = (1, 3, 4, 'mmf', 0)
+from datetime import datetime
+import os
+import subprocess
 
 def get_version():
     version = '%s.%s' % (VERSION[0], VERSION[1])
@@ -8,9 +11,13 @@ def get_version():
         version = '%s pre-alpha' % version
     else:
         if VERSION[3] != 'final':
-            version = '%s %s %s' % (version, VERSION[3], VERSION[4])
-    from django.utils.version import get_svn_revision
-    svn_rev = get_svn_revision()
-    if svn_rev != u'SVN-unknown':
-        version = "%s %s" % (version, svn_rev)
+            now = datetime.now()
+            version = ' '.join((version, VERSION[3], now.strftime('%Y%m%d %H%M%S'), get_git_changeset()))
     return version
+
+def get_git_changeset():
+    repo_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+    git_log = subprocess.Popen('git log --pretty=format:%H --quiet -1 HEAD',
+            stdout=subprocess.PIPE, stderr=subprocess.PIPE,
+            shell=True, cwd=repo_dir, universal_newlines=True)
+    return git_log.communicate()[0]
