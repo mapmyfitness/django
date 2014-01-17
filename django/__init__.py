@@ -3,7 +3,19 @@ from datetime import datetime
 import os
 import subprocess
 
-def get_version():
+def get_version(release=False):
+    if not release:
+        try:
+            f = open("RELEASE-VERSION", "r")
+
+            try:
+                version = f.readlines()[0]
+                return version.strip()
+
+            finally:
+                f.close()
+        except:
+            pass
     version = '%s.%s' % (VERSION[0], VERSION[1])
     if VERSION[2]:
         version = '%s.%s' % (version, VERSION[2])
@@ -13,7 +25,16 @@ def get_version():
         if VERSION[3] != 'final':
             now = datetime.now()
             version = ' '.join((version, VERSION[3], now.strftime('%Y%m%d %H%M%S'), get_git_changeset()))
+    if release:
+        write_release_version(version)
     return version
+
+
+def write_release_version(version):
+    f = open("RELEASE-VERSION", "w")
+    f.write("%s\n" % version)
+    f.close()
+
 
 def get_git_changeset():
     repo_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
