@@ -2,7 +2,7 @@
 *.pot
 *.py[co]
 docs/_build/
-RELEASE-VERSION
+django/RELEASE_VERSION
 build/
 dist/
 MANIFEST

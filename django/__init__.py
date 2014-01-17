@@ -3,10 +3,16 @@ from datetime import datetime
 import os
 import subprocess
 
+
+def get_version_file():
+    directory = os.path.dirname(os.path.abspath(__file__))
+    return directory + os.sep + "RELEASE_VERSION"
+
+
 def get_version(release=False):
     if not release:
         try:
-            f = open("RELEASE-VERSION", "r")
+            f = open(get_version_file(), "r")
 
             try:
                 version = f.readlines()[0]
@@ -31,7 +37,7 @@ def get_version(release=False):
 
 
 def write_release_version(version):
-    f = open("RELEASE-VERSION", "w")
+    f = open(get_version_file(), "w")
     f.write("%s\n" % version)
     f.close()
 
