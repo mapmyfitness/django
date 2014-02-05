@@ -65,10 +65,10 @@ class GenericForeignKey(six.with_metaclass(RenameGenericForeignKeyMethods)):
 
     def get_content_type(self, obj=None, id=None, using=None):
         if obj is not None:
-            return ContentType.objects.db_manager(obj._state.db).get_for_model(
+            return ContentType.objects.get_for_model(
                 obj, for_concrete_model=self.for_concrete_model)
         elif id:
-            return ContentType.objects.db_manager(using).get_for_id(id)
+            return ContentType.objects.get_for_id(id)
         else:
             # This should never happen. I love comments like this, don't you?
             raise Exception("Impossible arguments to GFK.get_content_type!")
@@ -238,7 +238,7 @@ class GenericRelation(ForeignObject):
         """
         return self.rel.to._base_manager.db_manager(using).filter(**{
                 "%s__pk" % self.content_type_field_name:
-                    ContentType.objects.db_manager(using).get_for_model(
+                    ContentType.objects.get_for_model(
                         self.model, for_concrete_model=self.for_concrete_model).pk,
                 "%s__in" % self.object_id_field_name:
                     [obj.pk for obj in objs]
@@ -269,7 +269,7 @@ class ReverseGenericRelatedObjectsDescriptor(object):
         RelatedManager = create_generic_related_manager(superclass)
 
         qn = connection.ops.quote_name
-        content_type = ContentType.objects.db_manager(instance._state.db).get_for_model(
+        content_type = ContentType.objects.get_for_model(
             instance, for_concrete_model=self.for_concrete_model)
 
         join_cols = self.field.get_joining_columns(reverse_join=True)[0]
