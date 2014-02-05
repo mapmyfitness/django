@@ -198,7 +198,7 @@ class Collector(object):
             for field in model._meta.virtual_fields:
                 if hasattr(field, 'bulk_related_objects'):
                     # Its something like generic foreign key.
-                    sub_objs = field.bulk_related_objects(new_objs, self.using)
+                    sub_objs = field.bulk_related_objects(new_objs)
                     self.collect(sub_objs,
                                  source=model,
                                  source_attr=field.rel.related_name,
