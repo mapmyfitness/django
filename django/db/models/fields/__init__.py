@@ -604,7 +604,12 @@ class AutoField(Field):
     def get_db_prep_value(self, value, connection, prepared=False):
         if not prepared:
             value = self.get_prep_value(value)
-            value = connection.ops.validate_autopk_value(value)
+            # MMF customization: commenting out the below because we 
+            # do use '0' as the value for some IDs and those zeros
+            # won't pass the validation. Notably, when pointing to
+            # ID=0 (user model) on ContentType
+            #
+            # value = connection.ops.validate_autopk_value(value)
         return value
 
     def get_prep_value(self, value):
