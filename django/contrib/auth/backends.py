@@ -19,7 +19,17 @@ class ModelBackend(object):
         except UserModel.DoesNotExist:
             # Run the default password hasher once to reduce the timing
             # difference between an existing and a non-existing user (#20760).
-            UserModel().set_password(password)
+            try:
+                # This is an MMF customization. The code path that this sets off
+                # tries to assign a new MMF UserPassword object to the new User
+                # that hasn't been saved yet, causing:
+                #   > Cannot assign "<UserPassword: UserPassword object>": 
+                #   > "User" instance isn't saved in the database.
+                # Since this is just to prevent timing attacks, we don't need
+                # to worry about that error.
+                UserModel().set_password(password)
+            except ValueError:
+                pass
 
     def get_group_permissions(self, user_obj, obj=None):
         """
