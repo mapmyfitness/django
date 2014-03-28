@@ -122,7 +122,7 @@ class CachedFilesMixin(object):
     def cache_key(self, name):
         return 'staticfiles:%s' % hashlib.md5(force_bytes(name)).hexdigest()
 
-    def url(self, name, force=False):
+    def url(self, name, force=False, evade_cache=False):
         """
         Returns the real URL in DEBUG mode.
         """
@@ -133,13 +133,16 @@ class CachedFilesMixin(object):
             if urlsplit(clean_name).path.endswith('/'):  # don't hash paths
                 hashed_name = name
             else:
-                cache_key = self.cache_key(name)
-                hashed_name = self.cache.get(cache_key)
-                if hashed_name is None:
+                if evade_cache:
                     hashed_name = self.hashed_name(clean_name).replace('\\', '/')
-                    # set the cache if there was a miss
-                    # (e.g. if cache server goes down)
-                    self.cache.set(cache_key, hashed_name)
+                else:
+                    cache_key = self.cache_key(name)
+                    hashed_name = self.cache.get(cache_key)
+                    if hashed_name is None:
+                        hashed_name = self.hashed_name(clean_name).replace('\\', '/')
+                        # set the cache if there was a miss
+                        # (e.g. if cache server goes down)
+                        self.cache.set(cache_key, hashed_name)
 
         final_url = super(CachedFilesMixin, self).url(hashed_name)
 
@@ -192,7 +195,7 @@ class CachedFilesMixin(object):
                 else:
                     start, end = 1, sub_level - 1
             joined_result = '/'.join(name_parts[:-start] + url_parts[end:])
-            hashed_url = self.url(unquote(joined_result), force=True)
+            hashed_url = self.url(unquote(joined_result), force=True, evade_cache=True)
             file_name = hashed_url.split('/')[-1:]
             relative_url = '/'.join(url.split('/')[:-1] + file_name)
 
