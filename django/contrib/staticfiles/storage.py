@@ -177,6 +177,9 @@ class CachedFilesMixin(object):
             # fragments and data-uri URLs
             if url.startswith(('#', 'http:', 'https:', 'data:', '//')):
                 return matched
+            # Paths are mostly ignored, though the template is applied to add any STATIC_URL prefixing:
+            if url.startswith('/') and url.endswith('/'):
+                return template % unquote(url)
             name_parts = name.split(os.sep)
             # Using posix normpath here to remove duplicates
             url = posixpath.normpath(url)
