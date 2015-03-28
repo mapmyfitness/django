@@ -20,6 +20,7 @@ from django.utils.timezone import utc
 try:
     import psycopg2 as Database
     import psycopg2.extensions
+    from psycopg2 import Error as Psycopg2Error
 except ImportError as e:
     from django.core.exceptions import ImproperlyConfigured
     raise ImproperlyConfigured("Error loading psycopg2 module: %s" % e)
@@ -191,6 +192,8 @@ class DatabaseWrapper(BaseDatabaseWrapper):
             # Use a psycopg cursor directly, bypassing Django's utilities.
             self.connection.cursor().execute("SELECT 1")
         except DatabaseError:
+            return False
+        except Psycopg2Error:
             return False
         else:
             return True
