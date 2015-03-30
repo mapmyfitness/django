@@ -81,12 +81,12 @@ version = __import__('django').get_version()
 
 if 'sdist' in sys.argv:
     import mmf_release_tools
-    version = mmf_release_tools.generate_release_version(version, __file__)
+    version = mmf_release_tools.generate_release_version(version, __file__, git_format='%h')
     mmf_release_tools.write_release_version(version)
 else:
     with open("RELEASE-VERSION", "r") as f:
         version = f.readlines()[0].strip()
-        
+
 setup(
     name='Django',
     version=version,
